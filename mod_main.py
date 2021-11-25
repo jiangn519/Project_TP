@@ -1,4 +1,4 @@
-from mod_classes import RegistreGitInfos
+from main_classes import RegistreGitInfos
 from mod_web import scrap_github
 
 
@@ -9,5 +9,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-

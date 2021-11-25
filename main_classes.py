@@ -15,7 +15,7 @@ class GitInfo:
 
 
     def __str__(self):
-        pass
+        return "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(self.titre, self.star, self.topics, self.description, self.links, self.version, self.releases, self.sponsors, self.packages, self.users, self.contributors, self.languages)
 
 class RegistreGitInfos:
     def __init__(self):
