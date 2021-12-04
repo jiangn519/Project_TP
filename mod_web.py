@@ -9,7 +9,7 @@ from main_classes import GitInfo
 def scrap_github(filter, listing):
     page = 1
 
-    while True:
+    while page <= 2:
         git = 'https://github.com/search?p=' + str(page) + '&q=' + filter
         url = get(git)
         print(url.text[:50])
@@ -37,7 +37,7 @@ def scrap_github(filter, listing):
             packs = ""
             users = ""
             contributors = ""
-            langs = ""
+
             for apt in aspect:
                 tags = apt.find_all('a', class_='topic-tag topic-tag-link')
 
@@ -98,36 +98,19 @@ def scrap_github(filter, listing):
                     for contributor in contrib:
                         contributors = contributors + contributor.a.img['alt']
 
-                languages = apt.find_all('li', class_='d-inline')
-                if languages is None:
-                    langs = "N/A"
-                else:
 
-                    for lang in languages:
-
-                        lan = lang.a
-                        # if lan.span is None:
-                        #     print(lan)
-                        # else:
-                        #     print('-----------')
-                        #     print(lan.span.text)
-                        if lang.span.text is None:
-                            langs = langs + lan.a.text
-                        else:
-                            langs = langs + lan.span.text
             print("*" * 50)
             print(
-                "{}, {}, {},{}, {}, {},{}, {}, {},{}, {}, {}".format(titre, star, topics, description, links, ver, rels,
-                                                                     sponsors, packs, users, contributors, langs))
+                "{}, {}, {},{}, {}, {},{}, {}, {},{}, {}".format(titre, star, topics, description, links, ver, rels,
+                                                                     sponsors, packs, users, contributors))
             listing.ajouter_info(
-                GitInfo(titre, star, topics, description, links, ver, rels, sponsors, packs, users, contributors,
-                        langs))
+                GitInfo(titre, star, topics, description, links, ver, rels, sponsors, packs, users, contributors))
             print(len(aspect))
 
             print('////////////////////////////////////////////////////////////////////')
 
-            if page > 100:
-                break
-            page += 1
+        page += 1
+
+
 
 

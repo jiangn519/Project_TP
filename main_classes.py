@@ -1,5 +1,5 @@
 class GitInfo:
-    def __init__(self, titre, star, topics, description, links, version, releases, sponsors, packages, users, contributors, languages):
+    def __init__(self, titre, star, topics, description, links, version, releases, sponsors, packages, users, contributors,):
         self.titre = titre
         self.star = star
         self.topics = topics
@@ -11,11 +11,11 @@ class GitInfo:
         self.packages = packages
         self.users = users
         self.contributors = contributors
-        self.languages = languages
+
 
 
     def __str__(self):
-        return "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(self.titre, self.star, self.topics, self.description, self.links, self.version, self.releases, self.sponsors, self.packages, self.users, self.contributors, self.languages)
+        return "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(self.titre, self.star, self.topics, self.description, self.links, self.version, self.releases, self.sponsors, self.packages, self.users, self.contributors)
 
 class RegistreGitInfos:
     def __init__(self):

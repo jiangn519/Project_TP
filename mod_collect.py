@@ -101,18 +101,7 @@ for rep in repertoire:
                 print('-----------')
                 print(contributor.a.img['alt'])
 
-        print('==========================================')
-        languages = apt.find_all('li', class_='d-inline')
-        if languages is None:
-            print(languages)
-        else:
-            for lang in languages:
-                lan = lang.a
-                if lan.span is None:
-                    print(lan)
-                else:
-                    print('-----------')
-                    print(lan.span.text)
+
     print(len(aspect))
 
     print('////////////////////////////////////////////////////////////////////')

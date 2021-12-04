@@ -1,12 +1,11 @@
 from typing import Any
-
 import sqlite3
 
 
 def cree_tab():
     conn = obtenir_connexion()
     curseur = conn.cursor()
-    cde_tab = '''create table if not existe GITable(
+    cde_tab = '''create table if not exists GITable(
                   repertoire text,
                   stars text,
                   topics text,
@@ -17,8 +16,7 @@ def cree_tab():
                   sponsor text,
                   packages text,
                   user text,
-                  contributors text,
-                  languages text,
+                  contributors text
                   )
                   '''
     curseur.execute(cde_tab)
@@ -29,7 +27,7 @@ def obtenir_connexion():
 def insertion_table(data):
     conn = obtenir_connexion()
     curseur = conn.cursor()
-    cde_ins = '''insert into GITable( repertoire text,
+    cde_ins = '''insert into GITable( repertoire,
                   stars,
                   topics,
                   description,
@@ -39,12 +37,11 @@ def insertion_table(data):
                   sponsor,
                   packages,
                   user,
-                  contributors,
-                  languages) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''';
+                  contributors) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''';
     for ins in data.registre:
-        curseur.execute(cde, [ins.titre,
+        curseur.execute(cde_ins, [ins.titre,
                               ins.star,
-                              ins.topic,
+                              ins.topics,
                               ins.description,
                               ins.links,
                               ins.version,
@@ -52,8 +49,7 @@ def insertion_table(data):
                               ins.sponsors,
                               ins.packages,
                               ins.users,
-                              ins.contributors,
-                              ins.languages])
+                              ins.contributors])
     conn.commit()
     conn.close()
 
@@ -65,27 +61,13 @@ def insertion_table(data):
 def recherche():
     conn = obtenir_connexion()
     curseur = conn.cursor()
-    recherche = str(input('recherche par topic, profile ou language ?:'))
+    recherche = str(input('recherche par topic ou profile?:'))
+    r = 0
 
-    if recherche is 'topic':
-        topic_rec = str(input('topic recherche ?:'))
-        rec = '''select topics,
-                      stars,
-                      description,
-                      link,
-                      version,
-                      release,
-                      sponsor,
-                      packages,
-                      user,
-                      contributors,
-                      languages where topics =?'''
-        curseur.execute(rec, [topic_rec])
-
-    elif recherche is 'profile':
-        profile_rec = str(input('profile recherche ?:'))
-        rec = '''select topics,
-                          stars,
+    while r == 0:
+        if recherche == 'topic':
+            topic_rec = str(input('topic recherche ?:'))
+            rec = '''select repertoire, stars, topics,
                           description,
                           link,
                           version,
@@ -93,36 +75,67 @@ def recherche():
                           sponsor,
                           packages,
                           user,
-                          contributors,
-                          languages where user =?'''
-        curseur.execute(rec, [profile_rec])
+                          contributors from GITable where topics =?'''
+            curseur.execute(rec, [topic_rec])
+            for req in curseur:
+                print('''repertoire:{}, stars:{}, topics:{}, description:{}, link:{}, version:{}, release:{},
+                          sponsor{}, packages:{}, user:{}, contributors:{}'''.format(req[0], req[1], req[2],
+                                                                                  req[3], req[4], req[5],
+                                                                                  req[6], req[7], req[8],
+                                                                                  req[9], req[10]))
+            r = 1
 
-        rec2 = '''select topics,
-                          stars,
-                          description,
-                          link,
-                          version,
-                          release,
-                          sponsor,
-                          packages,
-                          user,
-                          contributors,
-                          languages where contributors =?'''
-        curseur.execute(rec2, [profile_rec])
+        elif recherche == 'profile':
+            profile_rec = str(input('profile recherche ?:'))
+            rec = '''select repertoire, stars, topics,
+                              stars,
+                              description,
+                              link,
+                              version,
+                              release,
+                              sponsor,
+                              packages,
+                              user,
+                              contributors from GITable where user =?'''
+            curseur.execute(rec, [profile_rec])
+            for req in curseur:
+                print('''repertoire:{}, stars:{}, topics:{}, description:{}, link:{}, version:{}, release:{},
+                          sponsor{}, packages:{}, user:{}, contributors:{}'''.format(req[0], req[1], req[2],
+                                                                                  req[3], req[4], req[5],
+                                                                                  req[6], req[7], req[8],
+                                                                                  req[9], req[10]))
 
-    elif recherche is 'language':
-        language_rec = str(input('languages recherche ?:'))
-        rec = '''select topics,
-                          stars,
-                          description,
-                          link,
-                          version,
-                          release,
-                          sponsor,
-                          packages,
-                          user,
-                          contributors,
-                          languages where languages =?'''
-        curseur.execute(rec, [language_rec])
+            rec2 = '''select repertoire, stars, topics,
+                              stars,
+                              description,
+                              link,
+                              version,
+                              release,
+                              sponsor,
+                              packages,
+                              user,
+                              contributors from GITable where contributors =?'''
+            curseur.execute(rec2, [profile_rec])
+            for req in curseur:
+                print('''repertoire:{}, stars:{}, topics:{}, description:{}, link:{}, version:{}, release:{},
+                          sponsor{}, packages:{}, user:{}, contributors:{}'''.format(req[0], req[1], req[2],
+                                                                                  req[3], req[4], req[5],
+                                                                                  req[6], req[7], req[8],
+                                                                                  req[9], req[10]))
+            r = 1
+
+        elif recherche == 'annuler':
+            r = 1
+
+
+        else:
+            recherche = str(input('''Voulez-vous une recherche par ( topic / profile )? insere votre 
+                                     reponse ou ( annuler ) pour arreter la recherche :'''))
+
+
+
+
+
+
 
 
