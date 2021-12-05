@@ -2,24 +2,32 @@ from urllib import request
 
 from requests import get
 from bs4 import BeautifulSoup
-
 from main_classes import GitInfo
-
+import random
 
 def scrap_github(filter, listing):
-    page = 1
 
-    while page <= 2:
+    proxies = ["43.241.141.21:35101", "181.205.41.210:7654", "1.179.148.9:55636", "5.183.71.145:39305",
+               "103.152.238.82:8080"]
+    header = {
+        'User-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'
+    }
+    random_proxy = random.choice(proxies)
+    page = 1
+    while True:
+        proxies = {"http": "http://" + random_proxy}
         git = 'https://github.com/search?p=' + str(page) + '&q=' + filter
-        url = get(git)
-        print(url.text[:50])
+        url = get(git, headers=header, proxies=proxies)
+        print('page:', page)
 
         html_soup = BeautifulSoup(url.text, 'html.parser')
         repertoire = html_soup.find_all('li',
                                         class_='repo-list-item hx_hit-repo d-flex flex-justify-start py-4 public source')
-
+        number = 0
         for rep in repertoire:
+            number += 1
             print('////////////////////////////////////////////////////////////////////')
+            print('number: ', number)
 
             titre = rep.a.text
             star = rep.find('a', class_='Link--muted').text
@@ -37,7 +45,7 @@ def scrap_github(filter, listing):
             packs = ""
             users = ""
             contributors = ""
-
+            langs = ""
             for apt in aspect:
                 tags = apt.find_all('a', class_='topic-tag topic-tag-link')
 
@@ -63,7 +71,6 @@ def scrap_github(filter, listing):
                     ver = "N/A"
                 else:
                     ver = version.text
-
                 releases = apt.find('relative-time')
                 if releases is None:
                     rels = "N/A"
@@ -96,21 +103,16 @@ def scrap_github(filter, listing):
                     contributors = "N/A"
                 else:
                     for contributor in contrib:
-                        contributors = contributors + contributor.a.img['alt']
+                        contributors = contributors + contributor.a.img['alt'] + ' '
 
-
-            print("*" * 50)
             print(
-                "{}, {}, {},{}, {}, {},{}, {}, {},{}, {}".format(titre, star, topics, description, links, ver, rels,
-                                                                     sponsors, packs, users, contributors))
+                "{}, {}, {},{}, {}, {},{}, {}, {},{}, {}".format(titre.replace("\n", ""), star.replace("\n", ""), topics.replace("\n", ""), description.replace("\n", ""), links.replace("\n", ""), ver.replace("\n", ""), rels.replace("\n", ""),
+                                                                     sponsors.replace("\n", ""), packs.replace("\n", ""), users.replace("\n", ""), contributors.replace("\n", "")))
             listing.ajouter_info(
-                GitInfo(titre, star, topics, description, links, ver, rels, sponsors, packs, users, contributors))
-            print(len(aspect))
+                GitInfo(titre.replace("\n", ""), star.replace("\n", ""), topics.replace("\n", ""), description.replace("\n", ""), links.replace("\n", ""), ver.replace("\n", ""), rels.replace("\n", ""), sponsors.replace("\n", ""), packs.replace("\n", ""), users.replace("\n", ""), contributors.replace("\n", "")))
 
-            print('////////////////////////////////////////////////////////////////////')
-
+        if page > 10:
+            break
         page += 1
-
-
 
 
