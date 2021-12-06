@@ -7,7 +7,7 @@ def main():
     listing = RegistreGitInfos()
     scrap_github(search, listing)
     #cree_tab()
-    #insertion_table(listing)
+    insertion_table(listing)
     recherche()
 
 

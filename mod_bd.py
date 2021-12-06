@@ -61,12 +61,12 @@ def insertion_table(data):
 def recherche():
     conn = obtenir_connexion()
     curseur = conn.cursor()
-    recherche = str(input('recherche par topic ou profile?:'))
+    recherche = str(input('recherche par repertoire, topic ou profile?:'))
     r = 0
 
     while r == 0:
         if recherche == 'topic':
-            topic_rec = str(input('topic recherche ?:'))
+            topic_rec = str(input('topic recherché ?:'))
             rec = '''select repertoire, stars, topics,
                           description,
                           link,
@@ -85,8 +85,28 @@ def recherche():
                                                                                   req[9], req[10]))
             r = 1
 
+        elif recherche == 'repertoire':
+            repertoire_rec = str(input('repertoire recherché ?:'))
+            rec = '''select repertoire, stars, topics,
+                          description,
+                          link,
+                          version,
+                          release,
+                          sponsor,
+                          packages,
+                          user,
+                          contributors from GITable where repertoire =?'''
+            curseur.execute(rec, [repertoire_rec])
+            for req in curseur:
+                print('''repertoire:{}, stars:{}, topics:{}, description:{}, link:{}, version:{}, release:{},
+                          sponsor{}, packages:{}, user:{}, contributors:{}'''.format(req[0], req[1], req[2],
+                                                                                  req[3], req[4], req[5],
+                                                                                  req[6], req[7], req[8],
+                                                                                  req[9], req[10]))
+            r = 1
+
         elif recherche == 'profile':
-            profile_rec = str(input('profile recherche ?:'))
+            profile_rec = str(input('profile recherché ?:'))
             rec = '''select repertoire, stars, topics,
                               stars,
                               description,
@@ -129,7 +149,7 @@ def recherche():
 
 
         else:
-            recherche = str(input('''Voulez-vous une recherche par ( topic / profile )? insere votre 
+            recherche = str(input('''Voulez-vous une recherche par ( repertoire / topic / profile )? insere votre 
                                      reponse ou ( annuler ) pour arreter la recherche :'''))
 
 
